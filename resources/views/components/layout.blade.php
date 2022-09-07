@@ -8,7 +8,9 @@
     <title>{{ $title }}</title>
 </head>
 <body>
-    <h1>{{ $title }}</h1>
-    {{ $slot }}
+    <div class="container">
+        <h1>{{ $title }}</h1>
+        {{ $slot }}
+    </div>
 </body>
 </html>
