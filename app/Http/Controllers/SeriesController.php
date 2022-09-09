@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SeriesFormRequest;
-use App\Models\Episode;
-use App\Models\Season;
 use App\Models\Series;
+use App\Repositories\SeriesRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Throwable;
 
 class SeriesController extends Controller
 {
+    public function __construct(private SeriesRepository $repository)
+    {
+        
+    }
+
     public function index(){
         // $series = Serie::all();
         $series = Series::query()->orderBy('name')->get();
@@ -24,32 +26,7 @@ class SeriesController extends Controller
     }
 
     public function store(SeriesFormRequest $request){
-        DB::beginTransaction();
-        try {
-            $serie = Series::create($request->all());
-            $seasons = [];
-            for($i = 1; $i <= $request->season; $i++){
-                $seasons[] = [
-                    'series_id' => $serie->id,
-                    'number' => $i
-                ];
-            }
-            Season::insert($seasons);
-    
-            $episodes = [];
-            foreach($serie->seasons as $season){
-                for($i = 1; $i <= $request->episode; $i++){
-                    $episodes[] = [
-                        'season_id' => $season->id,
-                        'number' => $i
-                    ];
-                }
-            }
-            Episode::insert($episodes);
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-        }
+        $serie = $this->repository->add($request);
 
         // return redirect(route('series.index'));
         // return redirect()->route('series.index');
