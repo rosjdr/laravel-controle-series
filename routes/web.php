@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\EpisodeController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\SeriesController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\Autenticador;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +40,9 @@ Route::controller(EpisodeController::class)->group(function(){
     Route::get('/seasons/{season}/episodes', 'index')->name('episodes.index');
     Route::post('/seasons/{season}/episodes', 'update')->name('episodes.update');
 });
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'store'])->name('signin');
+
+Route::get('/register', [UserController::class, 'create'])->name('users.create');
+Route::post('/register', [UserController::class, 'store'])->name('users.store');
